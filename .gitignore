@@ -32,8 +32,8 @@
 *.app
 
 # Editor files
-.vs/*
-x64/*
+.vs
+x64
 *.idb
 *.pdb
 *.ilk
