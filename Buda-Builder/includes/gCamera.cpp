@@ -37,7 +37,6 @@ void gCamera::SetView(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up)
 
 	m_dist = glm::length( m_at - m_eye );	
 
-	//m_u = atan2f( m_fw.z, m_fw.x );
 	 m_u = -atan2f( m_fw.z, m_fw.x );
 	m_v = acosf( m_fw.y );
 }
@@ -67,7 +66,6 @@ void gCamera::UpdateUV(float du, float dv)
 	m_u		+= du;
 	m_v		 = glm::clamp<float>(m_v - dv, 0.1f, 3.1f);
 
-	//m_at = m_eye + m_dist*glm::vec3(	cosf(m_u)*sinf(m_v), 
 	 m_eye = m_at + m_dist*glm::vec3(	cosf(m_u)*sinf(m_v), 
 										cosf(m_v), 
 										sinf(m_u)*sinf(m_v) );
@@ -160,12 +158,10 @@ void gCamera::MouseWheel(SDL_MouseWheelEvent& wheel)
 {
 	if (wheel.y > 0 && m_dist > 1) // scroll up
 	{
-		// Put code for handling "scroll up" here!
 		m_eye += glm::normalize(m_at - m_eye);
 	}
 	else if (wheel.y < 0 && m_dist < 100) // scroll down
 	{
-		// Put code for handling "scroll down" here!
 		m_eye += glm::normalize(m_eye - m_at);
 	}
 	m_dist = glm::length(m_at - m_eye);

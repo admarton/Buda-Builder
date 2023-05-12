@@ -296,13 +296,6 @@ void CMyApp::Render()
 	// végül állítsuk vissza
 	glDepthFunc(prevDepthFnc);
 
-
-	// 1. feladat: készíts egy vertex shader-fragment shader párt, ami tárolt geometria _nélkül_ kirajzol egy tetszőleges pozícióba egy XYZ tengely-hármast,
-	//			   ahol az X piros, az Y zöld a Z pedig kék!
-
-	//ImGui Testwindow
-	//ImGui::ShowTestWindow();
-
 	{
 		ImGui::Begin("Camera controls");
 		ImGui::Text("Move:");
