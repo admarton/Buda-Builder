@@ -40,3 +40,6 @@ x64
 *.log
 *.tlog
 *.user
+
+# ImGui files
+imgui.ini

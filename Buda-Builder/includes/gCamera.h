@@ -53,6 +53,7 @@ public:
 	void KeyboardDown(SDL_KeyboardEvent& key);
 	void KeyboardUp(SDL_KeyboardEvent& key);
 	void MouseMove(SDL_MouseMotionEvent& mouse);
+	void MouseWheel(SDL_MouseWheelEvent& wheel);
 
 private:
 	/// <summary>
@@ -120,5 +121,6 @@ private:
 
 	float	m_goFw;
 	float	m_goRight;
+	float	m_goUp;
 };
 

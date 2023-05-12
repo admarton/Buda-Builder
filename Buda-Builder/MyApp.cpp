@@ -301,7 +301,24 @@ void CMyApp::Render()
 	//			   ahol az X piros, az Y zöld a Z pedig kék!
 
 	//ImGui Testwindow
-	ImGui::ShowTestWindow();
+	//ImGui::ShowTestWindow();
+
+	{
+		ImGui::Begin("Camera controls");
+		ImGui::Text("Move:");
+		ImGui::BulletText("Forward - W");
+		ImGui::BulletText("Backward - S");
+		ImGui::BulletText("Left - A");
+		ImGui::BulletText("Right - D");
+		ImGui::BulletText("Up - E");
+		ImGui::BulletText("Down - Q");
+		ImGui::Text("Zoom:");
+		ImGui::BulletText("Mouse wheel scroll");
+		ImGui::Text("Rotate:");
+		ImGui::BulletText("Mouse move around a point");
+		ImGui::BulletText("Hold right mouse button");
+		ImGui::End();
+	}
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
@@ -329,6 +346,7 @@ void CMyApp::MouseUp(SDL_MouseButtonEvent& mouse)
 
 void CMyApp::MouseWheel(SDL_MouseWheelEvent& wheel)
 {
+	m_camera.MouseWheel(wheel);
 }
 
 // a két paraméterben az új ablakméret szélessége (_w) és magassága (_h) található
