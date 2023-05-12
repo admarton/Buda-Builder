@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# Editor files
+.vs/*
+x64/*
+*.idb
+*.pdb
+*.ilk
+*.log
+*.tlog
+*.user
