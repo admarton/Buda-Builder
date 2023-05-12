@@ -103,6 +103,7 @@
     <ClInclude Include="T:\OGLPack\include\imgui\imgui.h" />
     <ClInclude Include="T:\OGLPack\include\imgui\imgui_impl_sdl_gl3.h" />
     <ClInclude Include="T:\OGLPack\include\imgui\imgui_internal.h" />
+    <ClInclude Include="Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Includes\gCamera.cpp" />
@@ -115,6 +116,7 @@
     <ClCompile Include="Includes\VertexArrayObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyApp.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <None Include="Includes\BufferObject.inl" />
     <None Include="Includes\ProgramObject.inl" />
     <None Include="Includes\TextureObject.inl" />
@@ -125,6 +127,8 @@
     <ClCompile Include="T:\OGLPack\include\imgui\imgui_demo.cpp" />
     <ClCompile Include="T:\OGLPack\include\imgui\imgui_draw.cpp" />
     <ClCompile Include="T:\OGLPack\include\imgui\imgui_impl_sdl_gl3.cpp" />
+    <None Include="terrain.frag" />
+    <None Include="terrain.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="myFrag.frag" />

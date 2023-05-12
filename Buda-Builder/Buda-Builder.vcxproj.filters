@@ -72,6 +72,9 @@
     <ClInclude Include="Includes\GLDebugMessageCallback.h">
       <Filter>GL utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyApp.cpp">
@@ -114,6 +117,9 @@
     <ClCompile Include="Includes\GLDebugMessageCallback.cpp">
       <Filter>GL utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="myFrag.frag">
@@ -139,6 +145,12 @@
     </None>
     <None Include="Includes\VertexArrayObject.inl">
       <Filter>GL utilities</Filter>
+    </None>
+    <None Include="terrain.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="terrain.frag">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

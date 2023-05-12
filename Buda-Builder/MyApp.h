@@ -25,6 +25,8 @@
 // mesh
 #include "includes/ObjParser_OGL3.h"
 
+#include "Terrain.h"
+
 class CMyApp
 {
 public:
@@ -72,6 +74,8 @@ protected:
 
 	// mesh adatok
 	std::unique_ptr<Mesh> m_mesh;
+
+	Terrain m_terrain;
 
 	// a jobb olvashatóság kedvéért
 	void InitShaders();

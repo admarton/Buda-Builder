@@ -243,6 +243,15 @@ void CMyApp::Render()
 
 	glm::mat4 viewProj = m_camera.GetViewProj();
 
+	//Terrain
+	glm::mat4 terrainWorld = glm::mat4(1.0f);
+	m_terrain.program.Use();
+	m_terrain.program.SetTexture("texImage", 0, m_suzanneTexture);
+	m_terrain.program.SetUniform("MVP", viewProj * terrainWorld);
+	m_terrain.program.SetUniform("world", terrainWorld);
+	m_terrain.program.SetUniform("worldIT", glm::inverse(glm::transpose(terrainWorld)));
+	m_terrain.Draw();
+
 	//Suzanne
 	glm::mat4 suzanneWorld = glm::mat4(1.0f);
 	m_program.Use();
