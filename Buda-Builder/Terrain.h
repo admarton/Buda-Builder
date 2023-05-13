@@ -14,10 +14,12 @@ public:
 	ProgramObject program;
 
 protected:
-
 	GLuint vertexArrayObject;
 	GLuint vertexBuffer;
 	GLuint indexBuffer;
+
+	GLuint heightTexture;
+	std::vector<float> heightMapData;
 
 	void InitSurface();
 	void InitShaders();

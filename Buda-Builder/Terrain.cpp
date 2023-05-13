@@ -14,10 +14,16 @@ Terrain::~Terrain()
 	glDeleteVertexArrays(1, &vertexArrayObject);
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteBuffers(1, &indexBuffer);
+
+	glDeleteTextures(1, &heightTexture);
 }
 
 void Terrain::Draw()
 {
+	program.SetUniform("n", (float)n);
+	program.SetUniform("m", (float)m);
+	program.SetTexture("heightMap", 1, heightTexture);
+
 	glBindVertexArray(vertexArrayObject);
 
 	glDrawElements(GL_TRIANGLES, (n) * (m) * 6, GL_UNSIGNED_INT, 0);
@@ -36,8 +42,8 @@ void Terrain::InitSurface()
 
 	for (GLuint i = 0; i < n; i++)
 		for (GLuint j = 0; j < m; j++) {
-			vertices[i * m + j].x = i;
-			vertices[i * m + j].y = j;
+			vertices[i * m + j].x = (float)i/(float)n;
+			vertices[i * m + j].y = (float)j/(float)m;
 		}
 
 	for (GLuint i = 0; i < n - 1; i++)
@@ -86,4 +92,27 @@ void Terrain::InitShaders()
 
 void Terrain::InitTextures()
 {
+	std::srand(std::time(nullptr));
+	heightMapData.resize(n * m);
+	for (GLuint i = 0; i < n; i++)
+		for (GLuint j = 0; j < m; j++)
+			heightMapData[i * m + j] = (float)(std::rand()%100)/100.f;
+
+	glGenTextures(1, &heightTexture);
+	glBindTexture(GL_TEXTURE_2D, heightTexture);
+	glTexImage2D(
+		GL_TEXTURE_2D,
+		0,				
+		GL_R16F,		
+		n,	
+		m,	
+		0,				
+		GL_RED,	
+		GL_FLOAT,
+		(void*)&heightMapData[0]);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
