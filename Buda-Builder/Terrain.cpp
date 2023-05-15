@@ -1,5 +1,4 @@
 #include "Terrain.h"
-#include <glm/glm.hpp>
 #include <vector>
 #include "Perlin.hpp"
 
@@ -23,7 +22,11 @@ void Terrain::Draw()
 {
 	program.SetUniform("n", (float)n);
 	program.SetUniform("m", (float)m);
-	program.SetTexture("heightMap", 1, heightTexture);
+	program.SetTexture("heightMap", 0, heightTexture);
+	program.SetTexture("patchMap", 1, patchTexture);
+	program.SetTexture("grass1", 2, grass1);
+	program.SetTexture("grass2", 3, grass2);
+	program.SetTexture("grass3", 4, grass3);
 
 	glBindVertexArray(vertexArrayObject);
 
@@ -59,6 +62,38 @@ void Terrain::ChangeHeightMap(float offsetX, float offsetY, float increment)
 		GL_RED,
 		GL_FLOAT,
 		(void*)&heightMapData[0]);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Terrain::FillPatchMap(float offsetX, float offsetY, float increment)
+{
+	auto noise = Perlin{ offsetX, offsetY, increment }.GetPerlin2D(n,m);
+	patchMapData.resize(n * m);
+	for (size_t i = 0; i < n*m; i++)
+	{
+		if (noise[i] < 0.33f) patchMapData[i] = glm::vec4(1.f,0.f,0.f,0.f);
+		else if (noise[i] < 0.44f) patchMapData[i] = glm::vec4(0.5f, 0.5f, 0.f, 0.f);
+		else if (noise[i] < 0.55f) patchMapData[i] = glm::vec4(0.f, 1.f, 0.f, 0.f);
+		else if (noise[i] < 0.66f) patchMapData[i] = glm::vec4(0.f, 0.5f, 0.5f, 0.f);
+		else patchMapData[i] = glm::vec4(0.f, 0.f, 1.f, 0.f);
+	}
+}
+
+void Terrain::ChangePatchMap(float offsetX, float offsetY, float increment)
+{
+	FillPatchMap(offsetX, offsetY, increment);
+
+	glBindTexture(GL_TEXTURE_2D, patchTexture);
+	glTexSubImage2D(
+		GL_TEXTURE_2D,
+		0,
+		0,
+		0,
+		n,
+		m,
+		GL_RGBA,
+		GL_FLOAT,
+		(void*)&patchMapData[0]);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -146,4 +181,31 @@ void Terrain::InitTextures()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	offsetX = (float)std::rand() / (float)std::rand();
+	offsetY = (float)std::rand() / (float)std::rand();
+	increment = (float)(std::rand() % 1000) / 10000.f;
+	FillPatchMap(offsetX, offsetY, increment);
+
+	glGenTextures(1, &patchTexture);
+	glBindTexture(GL_TEXTURE_2D, patchTexture);
+	glTexImage2D(
+		GL_TEXTURE_2D,
+		0,
+		GL_RGBA,
+		n,
+		m,
+		0,
+		GL_RGBA,
+		GL_FLOAT,
+		(void*)&patchMapData[0]);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	grass1.FromFile("assets/Grass001_1K_Color.png");
+	grass2.FromFile("assets/Grass003_1K_Color.png");
+	grass3.FromFile("assets/Grass004_1K_Color.png");
 }

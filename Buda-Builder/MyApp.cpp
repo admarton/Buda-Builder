@@ -244,9 +244,8 @@ void CMyApp::Render()
 	glm::mat4 viewProj = m_camera.GetViewProj();
 
 	//Terrain
-	glm::mat4 terrainWorld = glm::mat4(1.0f);
+	glm::mat4 terrainWorld = glm::translate(glm::vec3(-(float)m_terrain.n/2.f, 1.f, -(float)m_terrain.m/2.f))*glm::mat4(1.f);
 	m_terrain.program.Use();
-	m_terrain.program.SetTexture("texImage", 0, m_suzanneTexture);
 	m_terrain.program.SetUniform("MVP", viewProj * terrainWorld);
 	m_terrain.program.SetUniform("world", terrainWorld);
 	m_terrain.program.SetUniform("worldIT", glm::inverse(glm::transpose(terrainWorld)));
@@ -323,10 +322,20 @@ void CMyApp::Render()
 	}
 	{
 		ImGui::Begin("Regenerate map");
-		ImGui::SliderFloat("Offset X", &m_offsetX, 0.f, 100.f);
-		ImGui::SliderFloat("Offset Y", &m_offsetY, 0.f, 100.f);
-		ImGui::SliderFloat("Increment", &m_increment, 0.0001f, 0.1f);
-		if (ImGui::Button("Regenerate")) m_terrain.ChangeHeightMap(m_offsetX, m_offsetY, m_increment);
+		{
+			ImGui::Text("Height:");
+			ImGui::SliderFloat("Height Offset X", &m_offsetX_h, 0.f, 100.f);
+			ImGui::SliderFloat("Height Offset Y", &m_offsetY_h, 0.f, 100.f);
+			ImGui::SliderFloat("Height Increment", &m_increment_h, 0.0001f, 0.1f);
+			if (ImGui::Button("Height Regenerate")) m_terrain.ChangeHeightMap(m_offsetX_h, m_offsetY_h, m_increment_h);
+		}
+		{
+			ImGui::Text("Color:");
+			ImGui::SliderFloat("Color Offset X", &m_offsetX_p, 0.f, 100.f);
+			ImGui::SliderFloat("Color Offset Y", &m_offsetY_p, 0.f, 100.f);
+			ImGui::SliderFloat("Color Increment", &m_increment_p, 0.0001f, 0.1f);
+			if (ImGui::Button("Color Regenerate")) m_terrain.ChangePatchMap(m_offsetX_p, m_offsetY_p, m_increment_p);
+		}
 		ImGui::End();
 	}
 }
