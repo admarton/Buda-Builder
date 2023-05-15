@@ -32,6 +32,7 @@ protected:
 	Texture2D grass1;
 	Texture2D grass2;
 	Texture2D grass3;
+	Texture2D rock;
 
 	void InitSurface();
 	void InitShaders();

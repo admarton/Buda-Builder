@@ -29,6 +29,7 @@ void Terrain::Draw()
 	program.SetTexture("grass1", 2, grass1);
 	program.SetTexture("grass2", 3, grass2);
 	program.SetTexture("grass3", 4, grass3);
+	program.SetTexture("rock", 5, rock);
 
 	glBindVertexArray(vertexArrayObject);
 
@@ -210,4 +211,5 @@ void Terrain::InitTextures()
 	grass1.FromFile("assets/Grass001_1K_Color.png");
 	grass2.FromFile("assets/Grass003_1K_Color.png");
 	grass3.FromFile("assets/Grass004_1K_Color.png");
+	rock.FromFile("assets/Rock023_1K_Color.png");
 }
