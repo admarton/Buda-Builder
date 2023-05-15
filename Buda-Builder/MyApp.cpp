@@ -321,16 +321,18 @@ void CMyApp::Render()
 		ImGui::End();
 	}
 	{
-		ImGui::Begin("Regenerate map");
+		ImGui::Begin("Terrain");
 		{
-			ImGui::Text("Height:");
+			ImGui::SliderFloat("Min height", &(m_terrain.minHeight), -50.f, 0.f);
+			ImGui::SliderFloat("Max height", &(m_terrain.maxHeight), 0.f, 100.f);
+		}
+		{
 			ImGui::SliderFloat("Height Offset X", &m_offsetX_h, 0.f, 100.f);
 			ImGui::SliderFloat("Height Offset Y", &m_offsetY_h, 0.f, 100.f);
 			ImGui::SliderFloat("Height Increment", &m_increment_h, 0.0001f, 0.1f);
 			if (ImGui::Button("Height Regenerate")) m_terrain.ChangeHeightMap(m_offsetX_h, m_offsetY_h, m_increment_h);
 		}
 		{
-			ImGui::Text("Color:");
 			ImGui::SliderFloat("Color Offset X", &m_offsetX_p, 0.f, 100.f);
 			ImGui::SliderFloat("Color Offset Y", &m_offsetY_p, 0.f, 100.f);
 			ImGui::SliderFloat("Color Increment", &m_increment_p, 0.0001f, 0.1f);

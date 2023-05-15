@@ -22,6 +22,8 @@ void Terrain::Draw()
 {
 	program.SetUniform("n", (float)n);
 	program.SetUniform("m", (float)m);
+	program.SetUniform("minHeight", minHeight);
+	program.SetUniform("maxHeight", maxHeight);
 	program.SetTexture("heightMap", 0, heightTexture);
 	program.SetTexture("patchMap", 1, patchTexture);
 	program.SetTexture("grass1", 2, grass1);

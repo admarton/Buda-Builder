@@ -18,6 +18,7 @@ public:
 
 	const GLuint n, m;
 	ProgramObject program;
+	float minHeight = -10.f, maxHeight = 40.f;
 
 protected:
 	GLuint vertexArrayObject;

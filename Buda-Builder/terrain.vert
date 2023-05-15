@@ -16,19 +16,22 @@ uniform mat4 worldIT;
 
 uniform float n;
 uniform float m;
+uniform float minHeight;
+uniform float maxHeight;
 uniform sampler2D heightMap;
 
 void main()
 {
-	float height = texture(heightMap, vs_in_tex).r * 5;
+	float heightDiff = maxHeight - minHeight;
+	float height = texture(heightMap, vs_in_tex).r * heightDiff + minHeight;
 	vec3 pos = vec3(vs_in_tex.x*n, height, vs_in_tex.y*m);
 	
 	float sx = 1.0/n;
 	vec2 uv = vs_in_tex;
-	float u = texture(heightMap, uv + sx * vec2(0.0, -1.0)).r*5;
-    float r = texture(heightMap, uv + sx * vec2(-1.0, 0.0)).r*5;
-    float l = texture(heightMap, uv + sx * vec2(1.0, 0.0)).r*5;
-    float d = texture(heightMap, uv + sx * vec2(0.0, 1.0)).r*5;
+	float u = texture(heightMap, uv + sx * vec2(0.0, -1.0)).r * heightDiff + minHeight;
+    float r = texture(heightMap, uv + sx * vec2(-1.0, 0.0)).r * heightDiff + minHeight;
+    float l = texture(heightMap, uv + sx * vec2(1.0, 0.0)).r * heightDiff + minHeight;
+    float d = texture(heightMap, uv + sx * vec2(0.0, 1.0)).r * heightDiff + minHeight;
 
 	vec3 norm = normalize(vec3(
 		r-l,
