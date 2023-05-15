@@ -75,6 +75,10 @@ protected:
 	// mesh adatok
 	std::unique_ptr<Mesh> m_mesh;
 
+	// terrain data
+	float m_offsetX = 0.f;
+	float m_offsetY = 0.f;
+	float m_increment = 0.01;
 	Terrain m_terrain;
 
 	// a jobb olvashatóság kedvéért

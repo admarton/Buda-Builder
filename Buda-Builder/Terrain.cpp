@@ -1,6 +1,7 @@
 #include "Terrain.h"
 #include <glm/glm.hpp>
 #include <vector>
+#include "Perlin.hpp"
 
 Terrain::Terrain(GLuint n, GLuint m) : n{ n }, m{ m }
 {
@@ -29,6 +30,36 @@ void Terrain::Draw()
 	glDrawElements(GL_TRIANGLES, (n) * (m) * 6, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
+}
+
+void Terrain::FillHeightMap(float offsetX, float offsetY, float increment)
+{
+	Perlin p{ offsetX, offsetY, increment };
+	heightMapData = p.GetPerlin2D(n, m);
+
+	for (unsigned i = 0; i < n; i++) {
+		for (unsigned j = 0; j < m; j++) {
+			heightMapData[i * m + j] *= 1.f - 2*glm::distance(glm::vec2{ (float)i/(float)n,(float)j/(float)m}, glm::vec2{0.5f, 0.5f});
+		}
+	}
+}
+
+void Terrain::ChangeHeightMap(float offsetX, float offsetY, float increment)
+{
+	FillHeightMap(offsetX, offsetY, increment);
+
+	glBindTexture(GL_TEXTURE_2D, heightTexture);
+	glTexSubImage2D(
+		GL_TEXTURE_2D,
+		0,
+		0,
+		0,
+		n,
+		m,
+		GL_RED,
+		GL_FLOAT,
+		(void*)&heightMapData[0]);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Terrain::InitSurface()
@@ -93,10 +124,10 @@ void Terrain::InitShaders()
 void Terrain::InitTextures()
 {
 	std::srand(std::time(nullptr));
-	heightMapData.resize(n * m);
-	for (GLuint i = 0; i < n; i++)
-		for (GLuint j = 0; j < m; j++)
-			heightMapData[i * m + j] = (float)(std::rand()%100)/100.f;
+	float offsetX = (float)std::rand() / (float)std::rand();
+	float offsetY = (float)std::rand() / (float)std::rand();
+	float increment = (float)(std::rand()%1000)/10000.f;
+	FillHeightMap(offsetX,offsetY,increment);
 
 	glGenTextures(1, &heightTexture);
 	glBindTexture(GL_TEXTURE_2D, heightTexture);

@@ -9,6 +9,8 @@ public:
 	~Terrain();
 
 	void Draw();
+	void FillHeightMap(float offsetX, float offsetY, float increment);
+	void ChangeHeightMap(float offsetX, float offsetY, float increment);
 
 	const GLuint n, m;
 	ProgramObject program;

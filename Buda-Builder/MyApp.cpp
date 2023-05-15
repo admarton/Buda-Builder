@@ -1,4 +1,4 @@
-﻿#include "MyApp.h"
+#include "MyApp.h"
 
 #include <math.h>
 #include <vector>
@@ -319,6 +319,14 @@ void CMyApp::Render()
 		ImGui::Text("Rotate:");
 		ImGui::BulletText("Mouse move around a point");
 		ImGui::BulletText("Hold right mouse button");
+		ImGui::End();
+	}
+	{
+		ImGui::Begin("Regenerate map");
+		ImGui::SliderFloat("Offset X", &m_offsetX, 0.f, 100.f);
+		ImGui::SliderFloat("Offset Y", &m_offsetY, 0.f, 100.f);
+		ImGui::SliderFloat("Increment", &m_increment, 0.0001f, 0.1f);
+		if (ImGui::Button("Regenerate")) m_terrain.ChangeHeightMap(m_offsetX, m_offsetY, m_increment);
 		ImGui::End();
 	}
 }
