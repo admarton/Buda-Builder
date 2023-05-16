@@ -33,6 +33,7 @@ protected:
 	Texture2D grass1;
 	Texture2D grass2;
 	Texture2D grass3;
+	Texture2D paving;
 	Texture2D rock;
 	Texture2D snow;
 	Texture2D sand;

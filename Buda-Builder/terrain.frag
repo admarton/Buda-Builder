@@ -16,13 +16,18 @@ uniform vec3 Ld = vec3(0.6, 0.6, 0.6);
 
 uniform float n;
 uniform float m;
+uniform float sandHeight;
+uniform float snowHeight;
 
 uniform sampler2D heightMap;
 uniform sampler2D patchMap;
 uniform sampler2D grass1;
 uniform sampler2D grass2;
 uniform sampler2D grass3;
+uniform sampler2D paving;
 uniform sampler2D rock;
+uniform sampler2D sand;
+uniform sampler2D snow;
 
 void main()
 {
@@ -41,7 +46,8 @@ void main()
 	vec4 color = 
 		patchMultiply.r*texture(grass1,texCoord)
 		+patchMultiply.g*texture(grass2,texCoord)
-		+patchMultiply.b*texture(grass3,texCoord);
+		+patchMultiply.b*texture(grass3,texCoord)
+		+patchMultiply.a*texture(paving,texCoord);
 	vec4 snowColor = texture(snow,texCoord);
 	float snowStrength = clamp(vs_out_pos.y-snowHeight, 0, 2)/2.0;
 	color = snowStrength*snowColor + (1-snowStrength)*color;
