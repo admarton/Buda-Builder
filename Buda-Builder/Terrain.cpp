@@ -24,12 +24,16 @@ void Terrain::Draw()
 	program.SetUniform("m", (float)m);
 	program.SetUniform("minHeight", minHeight);
 	program.SetUniform("maxHeight", maxHeight);
+	program.SetUniform("sandHeight", sandHeight);
+	program.SetUniform("snowHeight", snowHeight);
 	program.SetTexture("heightMap", 0, heightTexture);
 	program.SetTexture("patchMap", 1, patchTexture);
 	program.SetTexture("grass1", 2, grass1);
 	program.SetTexture("grass2", 3, grass2);
 	program.SetTexture("grass3", 4, grass3);
 	program.SetTexture("rock", 5, rock);
+	program.SetTexture("snow", 6, snow);
+	program.SetTexture("sand", 7, sand);
 
 	glBindVertexArray(vertexArrayObject);
 
@@ -212,4 +216,6 @@ void Terrain::InitTextures()
 	grass2.FromFile("assets/Grass003_1K_Color.png");
 	grass3.FromFile("assets/Grass004_1K_Color.png");
 	rock.FromFile("assets/Rock023_1K_Color.png");
+	snow.FromFile("assets/Snow001_1K_Color.png");
+	sand.FromFile("assets/Ground054_1K_Color.png");
 }

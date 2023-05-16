@@ -19,6 +19,7 @@ public:
 	const GLuint n, m;
 	ProgramObject program;
 	float minHeight = -10.f, maxHeight = 40.f;
+	float sandHeight = 5.f, snowHeight = 30.f;
 
 protected:
 	GLuint vertexArrayObject;
@@ -33,6 +34,8 @@ protected:
 	Texture2D grass2;
 	Texture2D grass3;
 	Texture2D rock;
+	Texture2D snow;
+	Texture2D sand;
 
 	void InitSurface();
 	void InitShaders();

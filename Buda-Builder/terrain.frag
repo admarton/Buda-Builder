@@ -37,13 +37,19 @@ void main()
 	vec3 diffuse = cosa*Ld;
 
 	vec4 patchMultiply = texture(patchMap, vs_out_tex);
-	vec2 texCoord = vec2(n*vs_out_tex.x, m*vs_out_tex.y);
-	vec4 patchColor = 
+	vec2 texCoord = vec2(vs_out_tex.x, vs_out_tex.y);
+	vec4 color = 
 		patchMultiply.r*texture(grass1,texCoord)
 		+patchMultiply.g*texture(grass2,texCoord)
 		+patchMultiply.b*texture(grass3,texCoord);
+	vec4 snowColor = texture(snow,texCoord);
+	float snowStrength = clamp(vs_out_pos.y-snowHeight, 0, 2)/2.0;
+	color = snowStrength*snowColor + (1-snowStrength)*color;
+	vec4 sandColor = texture(sand,texCoord);
+	float sandStrength = 1-clamp(vs_out_pos.y-sandHeight, 0, 1);
+	color = sandStrength*sandColor + (1-sandStrength)*color;
 	float steepness = clamp(dot(normal, vec3(0.0,1.0,0.0)), 0, 1);
 	vec4 rockColor = texture(rock,texCoord);
-	vec4 color = steepness*patchColor + (1-steepness)*rockColor;
+	color = steepness*color + (1-steepness)*rockColor;
 	fs_out_col = vec4(ambient + diffuse, 1) * color;
 }

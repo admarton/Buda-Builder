@@ -325,6 +325,8 @@ void CMyApp::Render()
 		{
 			ImGui::SliderFloat("Min height", &(m_terrain.minHeight), -50.f, 0.f);
 			ImGui::SliderFloat("Max height", &(m_terrain.maxHeight), 0.f, 100.f);
+			ImGui::SliderFloat("Sand height", &(m_terrain.sandHeight), 0.f, 10.f);
+			ImGui::SliderFloat("Snow height", &(m_terrain.snowHeight), 0.f, 100.f);
 		}
 		{
 			ImGui::SliderFloat("Height Offset X", &m_offsetX_h, 0.f, 100.f);
