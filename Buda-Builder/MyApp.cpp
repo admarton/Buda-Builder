@@ -342,6 +342,11 @@ void CMyApp::Render()
 		}
 		ImGui::End();
 	}
+	{
+		ImGui::Begin("FPS");
+		ImGui::Text("%.3f", ImGui::GetIO().Framerate);
+		ImGui::End();
+	}
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
