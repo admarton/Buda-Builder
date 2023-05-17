@@ -16,6 +16,7 @@ Terrain::~Terrain()
 	glDeleteBuffers(1, &indexBuffer);
 
 	glDeleteTextures(1, &heightTexture);
+	glDeleteTextures(1, &patchTexture);
 }
 
 void Terrain::Draw()
@@ -166,7 +167,7 @@ void Terrain::InitShaders()
 
 void Terrain::InitTextures()
 {
-	std::srand(std::time(nullptr));
+	std::srand((unsigned)std::time(nullptr));
 	float offsetX = (float)std::rand() / (float)std::rand();
 	float offsetY = (float)std::rand() / (float)std::rand();
 	float increment = (float)(std::rand()%1000)/10000.f;

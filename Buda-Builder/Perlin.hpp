@@ -14,8 +14,7 @@ public:
 	 * Weight w should be in the range [0.0, 1.0]
 	 */
 	float interpolate(float a0, float a1, float w) {
-		return (a1 - a0) * ((w * (w * 6.0 - 15.0) + 10.0) * w * w * w) + a0;
-		
+		return (a1 - a0) * ((w * (w * 6.f - 15.f) + 10.f) * w * w * w) + a0;
 	}
 
 	typedef struct {
@@ -31,7 +30,7 @@ public:
 		a *= 3284157443; b ^= a << s | a >> w - s;
 		b *= 1911520717; a ^= b << s | b >> w - s;
 		a *= 2048419325;
-		float random = a * (3.14159265 / ~(~0u >> 1)); // in [0, 2*Pi]
+		float random = a * (3.14159265f / ~(~0u >> 1)); // in [0, 2*Pi]
 		vector2 v;
 		v.x = cos(random); v.y = sin(random);
 		return v;

@@ -1,4 +1,4 @@
-﻿// GLEW
+// GLEW
 #include <GL/glew.h>
 
 // SDL
@@ -70,8 +70,8 @@ int main( int argc, char* args[] )
 	win = SDL_CreateWindow( "Hello SDL&OpenGL!",		// az ablak fejléce
 							100,						// az ablak bal-felső sarkának kezdeti X koordinátája
 							100,						// az ablak bal-felső sarkának kezdeti Y koordinátája
-							640,						// ablak szélessége
-							480,						// és magassága
+							1080,						// ablak szélessége
+							720,						// és magassága
 							SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);			// megjelenítési tulajdonságok
 
 
