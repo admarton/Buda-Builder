@@ -78,6 +78,9 @@
     <ClInclude Include="Perlin.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Building.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyApp.cpp">
@@ -123,6 +126,9 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Building.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="myFrag.frag">
@@ -153,6 +159,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="terrain.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="building.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="building.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

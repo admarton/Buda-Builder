@@ -26,6 +26,7 @@
 #include "includes/ObjParser_OGL3.h"
 
 #include "Terrain.h"
+#include "Building.h"
 
 class CMyApp
 {
@@ -83,6 +84,9 @@ protected:
 	float m_offsetY_p = 0.f;
 	float m_increment_p = 0.01f;
 	Terrain m_terrain;
+
+	// buildings
+	std::vector<Building> m_buildings;
 
 	// a jobb olvashatóság kedvéért
 	void InitShaders();
