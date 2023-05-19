@@ -25,5 +25,11 @@ protected:
 	void InitShaders();
 	void InitTextures();
 	void InitStudioFlat();
+	void InitHouse();
+	void InitFamilyHouse();
+	void InitTower();
+	void InitBlockHouse();
+
+	void InitBox(float width, float height, float length, bool withRoof = true);
 };
 
