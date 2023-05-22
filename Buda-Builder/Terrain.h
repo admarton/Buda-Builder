@@ -10,11 +10,14 @@ public:
 	Terrain(GLuint n = 256, GLuint m = 256);
 	~Terrain();
 
+	void SetUniforms();
 	void Draw();
 	void FillHeightMap(float offsetX, float offsetY, float increment);
 	void ChangeHeightMap(float offsetX, float offsetY, float increment);
 	void FillPatchMap(float offsetX, float offsetY, float increment);
 	void ChangePatchMap(float offsetX, float offsetY, float increment);
+
+	GLuint GetHeightTexture() { return heightTexture; }
 
 	const GLuint n, m;
 	ProgramObject program;

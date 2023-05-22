@@ -19,7 +19,7 @@ Terrain::~Terrain()
 	glDeleteTextures(1, &patchTexture);
 }
 
-void Terrain::Draw()
+void Terrain::SetUniforms()
 {
 	program.SetUniform("n", (float)n);
 	program.SetUniform("m", (float)m);
@@ -36,7 +36,10 @@ void Terrain::Draw()
 	program.SetTexture("rock", 6, rock);
 	program.SetTexture("snow", 7, snow);
 	program.SetTexture("sand", 8, sand);
+}
 
+void Terrain::Draw()
+{
 	glBindVertexArray(vertexArrayObject);
 
 	glDrawElements(GL_TRIANGLES, (n) * (m) * 6, GL_UNSIGNED_INT, 0);

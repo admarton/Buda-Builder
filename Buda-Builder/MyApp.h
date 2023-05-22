@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // C++ includes
 #include <memory>
@@ -27,6 +27,7 @@
 
 #include "Terrain.h"
 #include "Building.h"
+#include "FrameBuffer.h"
 
 class CMyApp
 {
@@ -47,6 +48,8 @@ public:
 	void MouseUp(SDL_MouseButtonEvent&);
 	void MouseWheel(SDL_MouseWheelEvent&);
 	void Resize(int, int);
+
+	void PlaceBuilding(int x, int y);
 
 protected:
 	// shaderekhez szükséges változók
@@ -86,7 +89,11 @@ protected:
 	Terrain m_terrain;
 
 	// buildings
-	std::vector<Building> m_buildings;
+	BuildingContainer m_buildings;
+	BuildingType m_buildingType = BuildingType::StudioFlat;
+
+	// frame buffer
+	FrameBuffer m_fbo;
 
 	// a jobb olvashatóság kedvéért
 	void InitShaders();

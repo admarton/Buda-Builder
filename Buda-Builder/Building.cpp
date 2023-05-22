@@ -1,41 +1,16 @@
 #include "Building.h"
 #include "includes/ObjParser_OGL3.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 
-Building::Building(float x, float z, Type type)
-	: x{ x }, z{ z }, type{ type }
+
+BuildingContainer::BuildingContainer()
 {
 	InitShaders();
 	InitTextures();
-	switch (type)
-	{
-	case Building::Type::StudioFlat:
-		InitStudioFlat();
-		break;
-	case Building::Type::House:
-		InitHouse();
-		break;
-	case Building::Type::FamiliyHouse:
-		InitFamilyHouse();
-		break;
-	case Building::Type::Tower:
-		InitTower();
-		break;
-	case Building::Type::BlockHouse:
-		InitBlockHouse();
-		break;
-	default:
-		break;
-	}
 }
 
-void Building::Draw()
-{
-	program.SetTexture("texImage", 0, texture);
-
-	mesh->draw();
-}
-
-void Building::InitShaders()
+void BuildingContainer::InitShaders()
 {
 	program.Init(
 		{
@@ -47,12 +22,61 @@ void Building::InitShaders()
 			{ 1, "vs_in_norm" },
 			{ 2, "vs_in_tex" },
 		}
-	);
+		);
 }
 
-void Building::InitTextures()
+void BuildingContainer::InitTextures()
 {
 	texture.FromFile("assets/House1_Diffuse.png");
+}
+
+void BuildingContainer::Draw(glm::mat4 viewProj)
+{
+	program.SetTexture("texImage", 1, texture);
+
+	for (auto& building : buildings) {
+		glm::mat4 buildingWorld = glm::translate(glm::vec3{ building.x,0.f,building.z }) * glm::mat4(1.f);
+		program.SetUniform("MVP", viewProj * buildingWorld);
+		program.SetUniform("world", buildingWorld);
+		program.SetUniform("worldIT", glm::inverse(glm::transpose(buildingWorld)));
+		building.Draw();
+	}
+}
+
+bool BuildingContainer::AddBuilding(float x, float z, BuildingType type)
+{
+	buildings.push_back(Building{ x,z,type });
+	return true;
+}
+
+Building::Building(float x, float z, BuildingType type)
+	: x{ x }, z{ z }, type{ type }
+{
+	switch (type)
+	{
+	case BuildingType::StudioFlat:
+		InitStudioFlat();
+		break;
+	case BuildingType::House:
+		InitHouse();
+		break;
+	case BuildingType::FamiliyHouse:
+		InitFamilyHouse();
+		break;
+	case BuildingType::Tower:
+		InitTower();
+		break;
+	case BuildingType::BlockHouse:
+		InitBlockHouse();
+		break;
+	default:
+		break;
+	}
+}
+
+void Building::Draw()
+{
+	mesh->draw();
 }
 
 void Building::InitStudioFlat()

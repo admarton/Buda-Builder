@@ -219,6 +219,9 @@ bool CMyApp::Init()
 	// kamera
 	m_camera.SetProj(glm::radians(60.0f), 640.0f / 480.0f, 0.01f, 1000.0f);
 
+
+	m_fbo.CreateFrameBuffer(1080,720);
+
 	return true;
 }
 
@@ -238,10 +241,29 @@ void CMyApp::Update()
 
 void CMyApp::Render()
 {
-	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
+	glm::mat4 viewProj = m_camera.GetViewProj();
+
+	// Draw to the FrameBuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo.GetFrameBuffer());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glm::mat4 viewProj = m_camera.GetViewProj();
+	//Terrain
+	glm::mat4 terrainWorld = glm::mat4(1.f);
+	m_fbo.m_terrainProgram.Use();
+	m_fbo.m_terrainProgram.SetUniform("MVP", viewProj * terrainWorld);
+	m_fbo.m_terrainProgram.SetUniform("world", terrainWorld);
+	m_fbo.m_terrainProgram.SetUniform("worldIT", glm::inverse(glm::transpose(terrainWorld)));
+	m_fbo.m_terrainProgram.SetUniform("n", (float)m_terrain.n);
+	m_fbo.m_terrainProgram.SetUniform("m", (float)m_terrain.m);
+	m_fbo.m_terrainProgram.SetUniform("minHeight", m_terrain.minHeight);
+	m_fbo.m_terrainProgram.SetUniform("maxHeight", m_terrain.maxHeight);
+	m_fbo.m_terrainProgram.SetTexture("heightMap", 0, m_terrain.GetHeightTexture());
+	m_terrain.Draw();
+	m_fbo.m_terrainProgram.Unuse();
+
+	// Draw to the screen
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Terrain
 	glm::mat4 terrainWorld = glm::translate(glm::vec3(-(float)m_terrain.n/2.f, 1.f, -(float)m_terrain.m/2.f))*glm::mat4(1.f);
@@ -249,7 +271,16 @@ void CMyApp::Render()
 	m_terrain.program.SetUniform("MVP", viewProj * terrainWorld);
 	m_terrain.program.SetUniform("world", terrainWorld);
 	m_terrain.program.SetUniform("worldIT", glm::inverse(glm::transpose(terrainWorld)));
+	m_terrain.SetUniforms();
 	m_terrain.Draw();
+	m_terrain.program.Unuse();
+
+	//Buildings
+	if (0 < m_buildings.size()) {
+		m_buildings.program.Use();
+		m_buildings.Draw(viewProj);
+		m_buildings.program.Unuse();
+	}
 
 	//Suzanne
 	glm::mat4 suzanneWorld = glm::mat4(1.0f);
@@ -347,6 +378,21 @@ void CMyApp::Render()
 		ImGui::Text("%.3f", ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
+	{
+		ImGui::Begin("Building Type");
+		ImGui::RadioButton("Studio Flat", (int*) & m_buildingType, (int)BuildingType::StudioFlat);
+		ImGui::RadioButton("House", (int*) & m_buildingType, (int)BuildingType::House);
+		ImGui::RadioButton("Family House", (int*) & m_buildingType, (int)BuildingType::FamiliyHouse);
+		ImGui::RadioButton("Tower", (int*) & m_buildingType, (int)BuildingType::Tower);
+		ImGui::RadioButton("Block House", (int*) & m_buildingType, (int)BuildingType::BlockHouse);
+		ImGui::End();
+	}
+	{
+		ImGui::Begin("FrameBuffer");
+		ImVec2 wsize = ImGui::GetWindowSize();
+		ImGui::Image((ImTextureID)m_fbo.GetColorBuffer(), wsize, ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::End();
+	}
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
@@ -370,6 +416,8 @@ void CMyApp::MouseDown(SDL_MouseButtonEvent& mouse)
 
 void CMyApp::MouseUp(SDL_MouseButtonEvent& mouse)
 {
+	if (mouse.button == SDL_BUTTON_LEFT)
+		PlaceBuilding(mouse.x, mouse.y);
 }
 
 void CMyApp::MouseWheel(SDL_MouseWheelEvent& wheel)
@@ -383,4 +431,16 @@ void CMyApp::Resize(int _w, int _h)
 	glViewport(0, 0, _w, _h );
 
 	m_camera.Resize(_w, _h);
+
+	m_fbo.CreateFrameBuffer(_w, _h);
+}
+
+void CMyApp::PlaceBuilding(int x, int y)
+{
+	auto data = m_fbo.GetValueFromLocation(x, y);
+
+	float xPos = data.x * m_terrain.n;
+	float zPos = data.y * m_terrain.m;
+
+	m_buildings.AddBuilding(xPos, zPos, m_buildingType);
 }

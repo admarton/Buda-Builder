@@ -81,6 +81,9 @@
     <ClInclude Include="Building.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyApp.cpp">
@@ -129,6 +132,9 @@
     <ClCompile Include="Building.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="myFrag.frag">
@@ -165,6 +171,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="building.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="terrainCoord.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

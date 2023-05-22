@@ -4,26 +4,23 @@
 #include "includes/ProgramObject.h"
 #include "includes/TextureObject.h"
 #include "includes/Mesh_OGL3.h"
+
+enum class BuildingType { StudioFlat, House, FamiliyHouse, Tower, BlockHouse };
+
 class Building
 {
 public:
-	enum class Type { StudioFlat, House, FamiliyHouse, Tower, BlockHouse };
 
-	Building(float x, float z, Type type = Type::StudioFlat);
+	Building(float x, float z, BuildingType type = BuildingType::StudioFlat);
 
-	const Type type;
+	const BuildingType type;
 	const float x, z;
-	ProgramObject program;
 
 	void Draw();
-
-	Texture2D texture;
 protected:
 	GLsizei numVertices;
 	std::unique_ptr<Mesh> mesh;
 
-	void InitShaders();
-	void InitTextures();
 	void InitStudioFlat();
 	void InitHouse();
 	void InitFamilyHouse();
@@ -31,5 +28,24 @@ protected:
 	void InitBlockHouse();
 
 	void InitBox(float width, float height, float length, bool withRoof = true);
+};
+
+class BuildingContainer
+{
+public:
+	BuildingContainer();
+
+	void InitShaders();
+	void InitTextures();
+
+	void Draw(glm::mat4 viewProj);
+	bool AddBuilding(float x, float z, BuildingType type = BuildingType::StudioFlat);
+
+	size_t size() { return buildings.size(); }
+
+	ProgramObject program;
+protected:
+	Texture2D texture;
+	std::vector<Building> buildings;
 };
 
