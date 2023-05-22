@@ -13,7 +13,6 @@ uniform mat4 MVP;
 uniform mat4 world;
 uniform mat4 worldIT;
 
-
 uniform float n;
 uniform float m;
 uniform float minHeight;
@@ -24,14 +23,14 @@ void main()
 {
 	float heightDiff = maxHeight - minHeight;
 	float height = texture(heightMap, vs_in_tex).r * heightDiff + minHeight;
-	vec3 pos = vec3(vs_in_tex.x*n, height, vs_in_tex.y*m);
+	vec4 pos = vec4(vs_in_tex.x*n, height, vs_in_tex.y*m, 1);
 	
 	float sx = 1.0/n;
 	float sy = 1.0/m;
 	vec2 uv = vs_in_tex;
 	float u = texture(heightMap, uv + sx * vec2(0.0, -1.0)).r * heightDiff + minHeight;
-    float r = texture(heightMap, uv + sx * vec2(-1.0, 0.0)).r * heightDiff + minHeight;
-    float l = texture(heightMap, uv + sx * vec2(1.0, 0.0)).r * heightDiff + minHeight;
+    float r = texture(heightMap, uv + sy * vec2(-1.0, 0.0)).r * heightDiff + minHeight;
+    float l = texture(heightMap, uv + sy * vec2(1.0, 0.0)).r * heightDiff + minHeight;
     float d = texture(heightMap, uv + sx * vec2(0.0, 1.0)).r * heightDiff + minHeight;
 
 	vec3 norm = normalize(vec3(
@@ -40,9 +39,9 @@ void main()
 		sy*(u-d)
 	));
 
-	gl_Position = MVP * vec4( pos, 1 );
+	gl_Position = MVP * pos;
 	
-	vs_out_pos = (world * vec4(pos, 1)).xyz;
+	vs_out_pos = (world * pos).xyz;
 	vs_out_norm = (worldIT * vec4(norm, 0)).xyz;
 	vs_out_tex = vs_in_tex;
 }

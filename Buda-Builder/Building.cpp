@@ -39,6 +39,8 @@ void BuildingContainer::Draw(glm::mat4 viewProj)
 		program.SetUniform("MVP", viewProj * buildingWorld);
 		program.SetUniform("world", buildingWorld);
 		program.SetUniform("worldIT", glm::inverse(glm::transpose(buildingWorld)));
+		program.SetUniform("x", building.x);
+		program.SetUniform("z", building.z);
 		building.Draw();
 	}
 }
