@@ -135,9 +135,7 @@ void Building::InitFamilyHouse()
 
 void Building::InitTower()
 {
-	mesh = std::make_unique<Mesh>();
-
-	InitBox(1.f, 2.f, 1.f);
+	mesh = std::unique_ptr<Mesh>(ObjParser::parse("assets/Tower.obj"));
 
 	mesh->initBuffers();
 }

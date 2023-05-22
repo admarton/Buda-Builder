@@ -43,3 +43,6 @@ x64
 
 # ImGui files
 imgui.ini
+
+# Exceptions
+!**/assets/*.obj
