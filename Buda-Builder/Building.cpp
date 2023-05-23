@@ -22,7 +22,7 @@ void BuildingContainer::InitShaders()
 			{ 1, "vs_in_norm" },
 			{ 2, "vs_in_tex" },
 		}
-		);
+	);
 }
 
 void BuildingContainer::InitTextures()

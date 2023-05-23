@@ -11,7 +11,7 @@
 
 CMyApp::CMyApp(void)
 {
-	m_camera.SetView(glm::vec3(5, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	m_camera.SetView(glm::vec3(130, 20, 130), glm::vec3(125, 0, 125), glm::vec3(0, 1, 0));
 	m_mesh = nullptr;
 }
 
@@ -184,6 +184,19 @@ void CMyApp::InitShaders()
 
 	m_program.LinkProgram();
 
+	// Cursor
+	m_cursorProgram.Init(
+		{
+			{ GL_VERTEX_SHADER, "building.vert" },
+			{ GL_FRAGMENT_SHADER, "cursor.frag" }
+		},
+		{
+			{ 0, "vs_in_pos" },
+			{ 1, "vs_in_norm" },
+			{ 2, "vs_in_tex" },
+		}
+	);
+
 	// shader program rövid létrehozása, egyetlen függvényhívással a fenti három:
 	m_programSkybox.Init(
 		{
@@ -285,6 +298,23 @@ void CMyApp::Render()
 		m_buildings.Draw(viewProj);
 		m_buildings.program.Unuse();
 	}
+
+	//Cursor
+	glm::mat4 buildingWorld = glm::translate( glm::vec3{ m_cursor[0],0.f,m_cursor[1] }) * glm::mat4(1.f);
+	m_cursorProgram.Use();
+	m_cursorProgram.SetUniform("n", (float)m_terrain.n);
+	m_cursorProgram.SetUniform("m", (float)m_terrain.m);
+	m_cursorProgram.SetUniform("minHeight", m_terrain.minHeight);
+	m_cursorProgram.SetUniform("maxHeight", m_terrain.maxHeight);
+	m_cursorProgram.SetTexture("heightMap", 0, m_terrain.GetHeightTexture());
+	m_cursorProgram.SetUniform("color", m_cursorColor);
+	m_cursorProgram.SetUniform("MVP", viewProj * buildingWorld);
+	m_cursorProgram.SetUniform("world", buildingWorld);
+	m_cursorProgram.SetUniform("worldIT", glm::inverse(glm::transpose(buildingWorld)));
+	m_cursorProgram.SetUniform("x", m_cursor[0]);
+	m_cursorProgram.SetUniform("z", m_cursor[1]);
+	m_cursorBuildings[(int)m_buildingType].Draw();
+	m_cursorProgram.Unuse();
 
 	//Suzanne
 	glm::mat4 suzanneWorld = glm::mat4(1.0f);
@@ -417,6 +447,12 @@ void CMyApp::KeyboardUp(SDL_KeyboardEvent& key)
 void CMyApp::MouseMove(SDL_MouseMotionEvent& mouse)
 {
 	m_camera.MouseMove(mouse);
+
+	auto data = m_fbo.GetValueFromLocation(mouse.x, mouse.y);
+	m_cursor[0] = data.x * m_terrain.n;
+	m_cursor[1] = data.y * m_terrain.m;
+	Rect area = Building::GetBoundingArea(m_cursor[0], m_cursor[1], m_buildingType);
+	m_cursorColor = m_buildings.CanBuildingBeAdded(area) ? glm::vec4{ 1.f,1.f,1.f,1.f } : glm::vec4{ 1.f,0.f,0.f,1.f };
 }
 
 void CMyApp::MouseDown(SDL_MouseButtonEvent& mouse)

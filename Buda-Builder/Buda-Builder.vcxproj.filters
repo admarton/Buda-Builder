@@ -179,5 +179,8 @@
     <None Include="terrainCoord.frag">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="cursor.frag">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

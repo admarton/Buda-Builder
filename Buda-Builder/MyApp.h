@@ -99,5 +99,16 @@ protected:
 	void InitShaders();
 	void InitCube();
 	void InitSkyBox();
+
+	float m_cursor[2]{ 0.f,0.f };
+	ProgramObject m_cursorProgram;
+	Building m_cursorBuildings[5] = {
+		{0,0,BuildingType::StudioFlat},
+		{0,0,BuildingType::House},
+		{0,0,BuildingType::FamiliyHouse},
+		{0,0,BuildingType::Tower},
+		{0,0,BuildingType::BlockHouse}
+	};
+	glm::vec4 m_cursorColor;
 };
 
