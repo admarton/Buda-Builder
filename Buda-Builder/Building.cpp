@@ -45,10 +45,9 @@ void BuildingContainer::Draw(glm::mat4 viewProj)
 	}
 }
 
-bool BuildingContainer::AddBuilding(float x, float z, BuildingType type)
+void BuildingContainer::AddBuilding(float x, float z, BuildingType type)
 {
 	buildings.push_back(Building{ x,z,type });
-	return true;
 }
 
 Building::Building(float x, float z, BuildingType type)
@@ -79,6 +78,23 @@ Building::Building(float x, float z, BuildingType type)
 void Building::Draw()
 {
 	mesh->draw();
+}
+
+Rect Building::GetBoundingArea(float x, float z, BuildingType type)
+{
+	glm::vec2 translate{ x,z };
+	switch (type)
+	{
+	case BuildingType::FamiliyHouse:
+		return Rect{4.f, -2.f, -6.f, 2.f} + translate;
+	case BuildingType::BlockHouse:
+		return Rect{3.f, -3.f, -2.f, 2.f} + translate;
+	case BuildingType::StudioFlat:
+	case BuildingType::House:
+	case BuildingType::Tower:
+	default:
+		return Rect{2.f, -2.f, -2.f, 2.f} + translate;
+	}
 }
 
 void Building::InitStudioFlat()

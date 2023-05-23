@@ -62,7 +62,12 @@ void Terrain::FillHeightMap(float offsetX, float offsetY, float increment)
 void Terrain::ChangeHeightMap(float offsetX, float offsetY, float increment)
 {
 	FillHeightMap(offsetX, offsetY, increment);
+	for (const Rect& rect : foundations) ApplyFoundationOnHeightMap(rect);
+	UpdateHeightMap();
+}
 
+void Terrain::UpdateHeightMap()
+{
 	glBindTexture(GL_TEXTURE_2D, heightTexture);
 	glTexSubImage2D(
 		GL_TEXTURE_2D,
@@ -94,7 +99,12 @@ void Terrain::FillPatchMap(float offsetX, float offsetY, float increment)
 void Terrain::ChangePatchMap(float offsetX, float offsetY, float increment)
 {
 	FillPatchMap(offsetX, offsetY, increment);
+	for (const Rect& rect : foundations) ApplyFoundationOnPatchMap(rect);
+	UpdatePatchMap();
+}
 
+void Terrain::UpdatePatchMap()
+{
 	glBindTexture(GL_TEXTURE_2D, patchTexture);
 	glTexSubImage2D(
 		GL_TEXTURE_2D,
@@ -107,6 +117,15 @@ void Terrain::ChangePatchMap(float offsetX, float offsetY, float increment)
 		GL_FLOAT,
 		(void*)&patchMapData[0]);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Terrain::AddFoundation(const Rect& found)
+{
+	foundations.push_back(found);
+	ApplyFoundationOnHeightMap(found);
+	ApplyFoundationOnPatchMap(found);
+	UpdateHeightMap();
+	UpdatePatchMap();
 }
 
 void Terrain::InitSurface()
@@ -225,3 +244,36 @@ void Terrain::InitTextures()
 	snow.FromFile("assets/Snow001_1K_Color.png");
 	sand.FromFile("assets/Ground054_1K_Color.png");
 }
+
+void Terrain::ApplyFoundationOnHeightMap(const Rect& found)
+{
+	float sum = 0, count = 0;
+	for (size_t i = (unsigned)floor(found.bottom); i < (unsigned)ceil(found.top); i++)
+	{
+		for (size_t j = (unsigned)floor(found.left); j < (unsigned)ceil(found.right); j++)
+		{
+			count += 1.f;
+			sum += heightMapData[i + j * n];
+		}
+	}
+	float newHeight = sum / count;
+	for (size_t i = (unsigned)floor(found.bottom); i < (unsigned)ceil(found.top); i++)
+	{
+		for (size_t j = (unsigned)floor(found.left); j < (unsigned)ceil(found.right); j++)
+		{
+			heightMapData[i + j * n] = newHeight;
+		}
+	}
+}
+
+void Terrain::ApplyFoundationOnPatchMap(const Rect& found)
+{
+	for (size_t i = (unsigned)floor(found.bottom); i < (unsigned)ceil(found.top); i++)
+	{
+		for (size_t j = (unsigned)floor(found.left); j < (unsigned)ceil(found.right); j++)
+		{
+			patchMapData[i + j * n] = glm::vec4{0.f, 0.f, 0.f, 1.f};
+		}
+	}
+}
+

@@ -4,19 +4,21 @@
 #include "includes/ProgramObject.h"
 #include "includes/TextureObject.h"
 #include "includes/Mesh_OGL3.h"
+#include "Rect.hpp"
 
 enum class BuildingType { StudioFlat, House, FamiliyHouse, Tower, BlockHouse };
 
 class Building
 {
 public:
-
 	Building(float x, float z, BuildingType type = BuildingType::StudioFlat);
 
 	const BuildingType type;
 	const float x, z;
 
 	void Draw();
+	static Rect GetBoundingArea(float x, float z, BuildingType type);
+
 protected:
 	GLsizei numVertices;
 	std::unique_ptr<Mesh> mesh;
@@ -40,6 +42,7 @@ public:
 
 	void Draw(glm::mat4 viewProj);
 	bool AddBuilding(float x, float z, BuildingType type = BuildingType::StudioFlat);
+	void AddBuilding(float x, float z, BuildingType type = BuildingType::StudioFlat);
 
 	size_t size() { return buildings.size(); }
 

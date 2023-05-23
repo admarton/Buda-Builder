@@ -397,6 +397,11 @@ void CMyApp::Render()
 		ImGui::Image((ImTextureID)m_fbo.GetColorBuffer(), wsize, ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::End();
 	}
+	{
+		ImGui::Begin("HeightMap");
+		ImGui::Image((ImTextureID)m_terrain.GetHeightTexture(), ImVec2{(float)m_terrain.n, (float)m_terrain.m}, ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::End();
+	}
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
@@ -445,6 +450,10 @@ void CMyApp::PlaceBuilding(int x, int y)
 
 	float xPos = data.x * m_terrain.n;
 	float zPos = data.y * m_terrain.m;
+
+	Rect area = Building::GetBoundingArea(xPos, zPos, m_buildingType);
+
+	m_terrain.AddFoundation(area);
 
 	m_buildings.AddBuilding(xPos, zPos, m_buildingType);
 }

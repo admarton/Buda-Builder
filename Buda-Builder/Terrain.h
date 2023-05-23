@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "includes/ProgramObject.h"
 #include "includes/TextureObject.h"
+#include "Rect.hpp"
 
 class Terrain
 {
@@ -14,8 +15,11 @@ public:
 	void Draw();
 	void FillHeightMap(float offsetX, float offsetY, float increment);
 	void ChangeHeightMap(float offsetX, float offsetY, float increment);
+	void UpdateHeightMap();
 	void FillPatchMap(float offsetX, float offsetY, float increment);
 	void ChangePatchMap(float offsetX, float offsetY, float increment);
+	void UpdatePatchMap();
+	void AddFoundation(const Rect& found);
 
 	GLuint GetHeightTexture() { return heightTexture; }
 
@@ -44,5 +48,10 @@ protected:
 	void InitSurface();
 	void InitShaders();
 	void InitTextures();
+
+	std::vector<Rect> foundations;
+	void ApplyFoundationOnHeightMap(const Rect& found);
+	void ApplyFoundationOnPatchMap(const Rect& found);
+	
 };
 
