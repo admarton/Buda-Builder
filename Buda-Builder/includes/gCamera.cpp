@@ -160,7 +160,7 @@ void gCamera::MouseWheel(SDL_MouseWheelEvent& wheel)
 	{
 		m_eye += glm::normalize(m_at - m_eye);
 	}
-	else if (wheel.y < 0 && m_dist < 100) // scroll down
+	else if (wheel.y < 0 && m_dist < 500) // scroll down
 	{
 		m_eye += glm::normalize(m_eye - m_at);
 	}

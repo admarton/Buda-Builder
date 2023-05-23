@@ -52,21 +52,15 @@ public:
 	void PlaceBuilding(int x, int y);
 
 protected:
-	// shaderekhez szükséges változók
-	ProgramObject		m_program;			// mesh shader
+	// shader variables
 	ProgramObject		m_programSkybox;	// skybox shader
 
-	VertexArrayObject	m_CubeVao;			// VAO
-	IndexBuffer			m_CubeIndices;		// index buffer
-	ArrayBuffer			m_CubeVertexBuffer;	// VBO
 	VertexArrayObject	m_SkyboxVao;
 	IndexBuffer			m_SkyboxIndices;	
 	ArrayBuffer			m_SkyboxPos;		
 
 	gCamera				m_camera;
 
-	Texture2D			m_woodTexture;
-	Texture2D			m_suzanneTexture;
 	TextureCubeMap		m_skyboxTexture;
 
 	struct Vertex
@@ -75,9 +69,6 @@ protected:
 		glm::vec3 n;
 		glm::vec2 t;
 	};
-
-	// mesh adatok
-	std::unique_ptr<Mesh> m_mesh;
 
 	// terrain data
 	float m_offsetX_h = 0.f;
@@ -95,11 +86,10 @@ protected:
 	// frame buffer
 	FrameBuffer m_fbo;
 
-	// a jobb olvashatóság kedvéért
 	void InitShaders();
-	void InitCube();
 	void InitSkyBox();
 
+	// cursor
 	float m_cursor[2]{ 0.f,0.f };
 	ProgramObject m_cursorProgram;
 	Building m_cursorBuildings[5] = {

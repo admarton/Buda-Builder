@@ -1,16 +1,14 @@
 #version 330 core
 
-// pipeline-b�l bej�v� per-fragment attrib�tumok
 in vec3 vs_out_pos;
 in vec3 vs_out_norm;
 in vec2 vs_out_tex;
 
 out vec4 fs_out_col;
 
-// ir�ny f�nyforr�s: f�ny ir�nya
 uniform vec3 light_dir = vec3(-1,-1,-1);
 
-// f�nytulajdons�gok: ambiens, diff�z, ...
+// Light props: ambient, diffuz, ...
 uniform vec3 La = vec3(0.4, 0.4, 0.4);
 uniform vec3 Ld = vec3(0.6, 0.6, 0.6);
 
