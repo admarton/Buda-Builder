@@ -452,8 +452,10 @@ void CMyApp::PlaceBuilding(int x, int y)
 	float zPos = data.y * m_terrain.m;
 
 	Rect area = Building::GetBoundingArea(xPos, zPos, m_buildingType);
+	Rect found = Building::GetFoundationArea(xPos, zPos, m_buildingType);
 
-	m_terrain.AddFoundation(area);
-
-	m_buildings.AddBuilding(xPos, zPos, m_buildingType);
+	if (m_buildings.CanBuildingBeAdded(area)) {
+		m_terrain.AddFoundation(found);
+		m_buildings.AddBuilding(xPos, zPos, m_buildingType);
+	}
 }

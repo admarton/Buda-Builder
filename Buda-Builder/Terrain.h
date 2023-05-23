@@ -49,8 +49,8 @@ protected:
 	void InitShaders();
 	void InitTextures();
 
-	std::vector<Rect> foundations;
-	void ApplyFoundationOnHeightMap(const Rect& found);
+	std::vector<std::pair<Rect, float>> foundations;
+	float ApplyFoundationOnHeightMap(const Rect& found);
 	void ApplyFoundationOnPatchMap(const Rect& found);
 	
 };

@@ -18,6 +18,9 @@ public:
 
 	void Draw();
 	static Rect GetBoundingArea(float x, float z, BuildingType type);
+	Rect GetBoundingArea() const { return GetBoundingArea(x, z, type); };
+	static Rect GetFoundationArea(float x, float z, BuildingType type);
+	Rect GetFoundationArea() const { return GetFoundationArea(x, z, type); };
 
 protected:
 	GLsizei numVertices;
@@ -41,7 +44,7 @@ public:
 	void InitTextures();
 
 	void Draw(glm::mat4 viewProj);
-	bool AddBuilding(float x, float z, BuildingType type = BuildingType::StudioFlat);
+	bool CanBuildingBeAdded(Rect area);
 	void AddBuilding(float x, float z, BuildingType type = BuildingType::StudioFlat);
 
 	size_t size() { return buildings.size(); }

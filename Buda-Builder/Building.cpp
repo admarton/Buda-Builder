@@ -45,6 +45,14 @@ void BuildingContainer::Draw(glm::mat4 viewProj)
 	}
 }
 
+bool BuildingContainer::CanBuildingBeAdded(Rect area)
+{
+	for (const auto& building : buildings) {
+		if (intersect(area, building.GetBoundingArea())) return false;
+	}
+	return true;
+}
+
 void BuildingContainer::AddBuilding(float x, float z, BuildingType type)
 {
 	buildings.push_back(Building{ x,z,type });
@@ -94,6 +102,23 @@ Rect Building::GetBoundingArea(float x, float z, BuildingType type)
 	case BuildingType::Tower:
 	default:
 		return Rect{2.f, -2.f, -2.f, 2.f} + translate;
+	}
+}
+
+Rect Building::GetFoundationArea(float x, float z, BuildingType type)
+{
+	glm::vec2 translate{ x,z };
+	switch (type)
+	{
+	case BuildingType::FamiliyHouse:
+		return Rect{ 5.f, -3.f, -7.f, 3.f } + translate;
+	case BuildingType::BlockHouse:
+		return Rect{ 4.f, -4.f, -3.f, 3.f } + translate;
+	case BuildingType::StudioFlat:
+	case BuildingType::House:
+	case BuildingType::Tower:
+	default:
+		return Rect{ 3.f, -3.f, -3.f, 3.f } + translate;
 	}
 }
 

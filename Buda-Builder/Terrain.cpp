@@ -62,7 +62,7 @@ void Terrain::FillHeightMap(float offsetX, float offsetY, float increment)
 void Terrain::ChangeHeightMap(float offsetX, float offsetY, float increment)
 {
 	FillHeightMap(offsetX, offsetY, increment);
-	for (const Rect& rect : foundations) ApplyFoundationOnHeightMap(rect);
+	for (const auto& [rect,height] : foundations) ApplyFoundationOnHeightMap(rect);
 	UpdateHeightMap();
 }
 
@@ -99,7 +99,7 @@ void Terrain::FillPatchMap(float offsetX, float offsetY, float increment)
 void Terrain::ChangePatchMap(float offsetX, float offsetY, float increment)
 {
 	FillPatchMap(offsetX, offsetY, increment);
-	for (const Rect& rect : foundations) ApplyFoundationOnPatchMap(rect);
+	for (const auto& [rect,height] : foundations) ApplyFoundationOnPatchMap(rect);
 	UpdatePatchMap();
 }
 
@@ -121,9 +121,9 @@ void Terrain::UpdatePatchMap()
 
 void Terrain::AddFoundation(const Rect& found)
 {
-	foundations.push_back(found);
-	ApplyFoundationOnHeightMap(found);
+	float height = ApplyFoundationOnHeightMap(found);
 	ApplyFoundationOnPatchMap(found);
+	foundations.push_back({ found, height });
 	UpdateHeightMap();
 	UpdatePatchMap();
 }
@@ -245,18 +245,26 @@ void Terrain::InitTextures()
 	sand.FromFile("assets/Ground054_1K_Color.png");
 }
 
-void Terrain::ApplyFoundationOnHeightMap(const Rect& found)
+float Terrain::ApplyFoundationOnHeightMap(const Rect& found)
 {
-	float sum = 0, count = 0;
-	for (size_t i = (unsigned)floor(found.bottom); i < (unsigned)ceil(found.top); i++)
-	{
-		for (size_t j = (unsigned)floor(found.left); j < (unsigned)ceil(found.right); j++)
-		{
-			count += 1.f;
-			sum += heightMapData[i + j * n];
+	float sum = 0, count = 0, newHeight = 0;
+	for (const auto& [rect,height] : foundations) {
+		if (intersect(found, rect)) {
+			count++;
+			sum += height;
 		}
 	}
-	float newHeight = sum / count;
+	if (0 == count) {
+		for (size_t i = (unsigned)floor(found.bottom); i < (unsigned)ceil(found.top); i++)
+		{
+			for (size_t j = (unsigned)floor(found.left); j < (unsigned)ceil(found.right); j++)
+			{
+				count ++;
+				sum += heightMapData[i + j * n];
+			}
+		}
+	}
+	newHeight = sum / count;
 	for (size_t i = (unsigned)floor(found.bottom); i < (unsigned)ceil(found.top); i++)
 	{
 		for (size_t j = (unsigned)floor(found.left); j < (unsigned)ceil(found.right); j++)
@@ -264,6 +272,7 @@ void Terrain::ApplyFoundationOnHeightMap(const Rect& found)
 			heightMapData[i + j * n] = newHeight;
 		}
 	}
+	return newHeight;
 }
 
 void Terrain::ApplyFoundationOnPatchMap(const Rect& found)
