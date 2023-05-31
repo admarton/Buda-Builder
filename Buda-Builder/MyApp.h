@@ -61,7 +61,6 @@ protected:
 
 	gCamera				m_camera;
 
-	TextureCubeMap		m_skyboxTexture;
 
 	struct Vertex
 	{
@@ -100,5 +99,13 @@ protected:
 		{0,0,BuildingType::BlockHouse}
 	};
 	glm::vec4 m_cursorColor;
+
+	// dynamic day and night
+	float m_time = 12.f;
+	enum TimeSpeed { Slow = 1, Medium = 24, Fast = 48 };
+	TimeSpeed m_timeSpeed = Slow;
+	glm::vec3 GetLightDirection() const;
+	glm::vec3 GetLightColor() const;
+
 };
 

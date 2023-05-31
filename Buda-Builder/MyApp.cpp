@@ -65,21 +65,6 @@ void CMyApp::InitSkyBox()
 		}, m_SkyboxIndices
 	);
 
-	// skybox texture
-	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-
-	m_skyboxTexture.AttachFromFile("assets/xpos.png", false, GL_TEXTURE_CUBE_MAP_POSITIVE_X);
-	m_skyboxTexture.AttachFromFile("assets/xneg.png", false, GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
-	m_skyboxTexture.AttachFromFile("assets/ypos.png", false, GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
-	m_skyboxTexture.AttachFromFile("assets/yneg.png", false, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
-	m_skyboxTexture.AttachFromFile("assets/zpos.png", false, GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
-	m_skyboxTexture.AttachFromFile("assets/zneg.png", true, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void CMyApp::InitShaders()
@@ -136,6 +121,7 @@ void CMyApp::Update()
 	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 
 	m_camera.Update(delta_time);
+	m_time = std::fmod(m_time + (((SDL_GetTicks() - last_time) / 60000.f) * (float)m_timeSpeed), 24.f);
 
 	last_time = SDL_GetTicks();
 }
@@ -147,6 +133,7 @@ void CMyApp::Render()
 	// Draw to the FrameBuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo.GetFrameBuffer());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.f,0.f,0.f,0.f);
 
 	//Terrain
 	glm::mat4 terrainWorld = glm::mat4(1.f);
@@ -171,6 +158,8 @@ void CMyApp::Render()
 	m_terrain.program.SetUniform("MVP", viewProj * terrainWorld);
 	m_terrain.program.SetUniform("world", terrainWorld);
 	m_terrain.program.SetUniform("worldIT", glm::inverse(glm::transpose(terrainWorld)));
+	m_terrain.program.SetUniform("light_dir", GetLightDirection());
+	m_terrain.program.SetUniform("Ld", GetLightColor());
 	m_terrain.SetUniforms();
 	m_terrain.Draw();
 	m_terrain.program.Unuse();
@@ -183,6 +172,8 @@ void CMyApp::Render()
 		m_buildings.program.SetUniform("minHeight", m_terrain.minHeight);
 		m_buildings.program.SetUniform("maxHeight", m_terrain.maxHeight);
 		m_buildings.program.SetTexture("heightMap", 0, m_terrain.GetHeightTexture());
+		m_buildings.program.SetUniform("light_dir", GetLightDirection());
+		m_buildings.program.SetUniform("Ld", GetLightColor());
 		m_buildings.Draw(viewProj);
 		m_buildings.program.Unuse();
 	}
@@ -212,10 +203,7 @@ void CMyApp::Render()
 	m_SkyboxVao.Bind();
 	m_programSkybox.Use();
 	m_programSkybox.SetUniform("MVP", viewProj * glm::translate( m_camera.GetEye()) );
-	
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
-	glUniform1i(m_programSkybox.GetLocation("skyboxTexture"), 0);
+	m_programSkybox.SetUniform("color", glm::vec4(GetLightColor(), 1.f) );
 
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 	m_programSkybox.Unuse();
@@ -285,6 +273,16 @@ void CMyApp::Render()
 		ImGui::Image((ImTextureID)m_terrain.GetHeightTexture(), ImVec2{(float)m_terrain.n, (float)m_terrain.m}, ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::End();
 	}
+	{
+		ImGui::Begin("Time");
+		ImGui::Text("Current time: %2d:%2d", (int)std::floor(m_time), (int)(std::fmod(m_time,1.f)*60));
+		ImGui::SliderFloat("Set time", &m_time, 0.f, 23.999f);
+		ImGui::Text("Speed:");
+		ImGui::RadioButton("Slow", (int*)&m_timeSpeed, (int)TimeSpeed::Slow);
+		ImGui::RadioButton("Medium", (int*)&m_timeSpeed, (int)TimeSpeed::Medium);
+		ImGui::RadioButton("Fast", (int*)&m_timeSpeed, (int)TimeSpeed::Fast);
+		ImGui::End();
+	}
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
@@ -344,4 +342,50 @@ void CMyApp::PlaceBuilding(int x, int y)
 		m_terrain.AddFoundation(found);
 		m_buildings.AddBuilding(xPos, zPos, m_buildingType);
 	}
+}
+
+glm::vec3 CMyApp::GetLightDirection() const
+{
+	float theta = std::fmod((m_time+6.f) / 12.f, 1.f) * M_PI;
+	return glm::vec3(std::cos(theta), -std::sin(theta), 0);
+}
+
+glm::vec3 CMyApp::GetLightColor() const
+{
+	glm::vec3 colorA, colorB;
+	float factor;
+
+	static const glm::vec3 pale_white{ 0.1f, 0.1f, 0.1f };
+	static const glm::vec3 deep_blue{ 0.2f, 0.2f, 0.5f };
+	static const glm::vec3 yellow{ 0.8f, 0.8f, 0.2f };
+	static const glm::vec3 orange{ 0.8f, 0.5f, 0.2f };
+	static const glm::vec3 white{ 1.0f, 1.0f, 1.0f };
+
+	if(0.f < m_time && 6.f >= m_time) {
+		colorA = pale_white;
+		colorB = deep_blue;
+		factor = m_time / 6.f;
+	} else if (6.f < m_time && 9.f >= m_time) {
+		colorA = deep_blue;
+		colorB = yellow;
+		factor = (m_time - 6.f) / 3.f;
+	} else if (9.f < m_time && 12.f >= m_time) {
+		colorA = yellow;
+		colorB = white;
+		factor = (m_time - 9.f) / 3.f;
+	} else if (12.f < m_time && 16.f >= m_time) {
+		colorA = white;
+		colorB = orange;
+		factor = (m_time - 12.f) / 4.f;
+	} else if (16.f < m_time && 19.f >= m_time) {
+		colorA = orange;
+		colorB = deep_blue;
+		factor = (m_time - 16.f) / 3.f;
+	} else {
+		colorA = deep_blue;
+		colorB = pale_white;
+		factor = (m_time - 19.f) / 5.f;
+	}
+
+	return (1 - factor) * colorA + factor * (colorB);
 }
