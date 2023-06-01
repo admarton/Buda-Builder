@@ -52,11 +52,5 @@ protected:
 	std::vector<std::pair<Rect, float>> foundations;
 	float ApplyFoundationOnHeightMap(const Rect& found);
 	void ApplyFoundationOnPatchMap(const Rect& found);
-
-	glm::vec3 Ka = glm::vec3(1.0);
-	glm::vec3 Kd = glm::vec3(1.0);
-	glm::vec3 Ks = glm::vec3(1.0);
-	float shininess = 0.1;
-	
 };
 
