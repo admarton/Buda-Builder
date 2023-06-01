@@ -109,5 +109,10 @@ protected:
 	glm::vec3 GetLightColor() const;
 	glm::vec3 GetSkyColor() const;
 
+	// water
+	ProgramObject m_waterProgram;
+	float m_waterHeight = 0.f;
+	Texture2D m_waterTexture;
+
 };
 

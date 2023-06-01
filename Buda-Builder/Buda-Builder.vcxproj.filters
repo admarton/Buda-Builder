@@ -182,5 +182,11 @@
     <None Include="cursor.frag">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="water.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="water.frag">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

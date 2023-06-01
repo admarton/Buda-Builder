@@ -141,6 +141,8 @@
     <None Include="terrain.frag" />
     <None Include="terrain.vert" />
     <None Include="terrainCoord.frag" />
+    <None Include="water.vert" />
+    <None Include="water.frag" />
   </ItemGroup>
   <ItemGroup>
     <None Include="myFrag.frag" />

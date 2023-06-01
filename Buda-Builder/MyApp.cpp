@@ -91,6 +91,16 @@ void CMyApp::InitShaders()
 			{ 0, "vs_in_pos" },
 		}
 	);
+
+	m_waterProgram.Init(
+		{
+			{ GL_VERTEX_SHADER, "water.vert" },
+			{ GL_FRAGMENT_SHADER, "water.frag" }
+		},
+		{
+			{ 0, "vs_in_tex" },
+		}
+	);
 }
 
 bool CMyApp::Init()
@@ -107,6 +117,8 @@ bool CMyApp::Init()
 	m_camera.SetProj(glm::radians(60.0f), 640.0f / 480.0f, 0.01f, 1000.0f);
 
 	m_fbo.CreateFrameBuffer(1080,720);
+
+	m_waterTexture.FromFile("assets/water_texture.jpg");
 
 	return true;
 }
@@ -197,6 +209,23 @@ void CMyApp::Render()
 	m_cursorBuildings[(int)m_buildingType].Draw();
 	m_cursorProgram.Unuse();
 
+	//Water
+	glm::mat4 waterWorld = glm::translate( glm::vec3{ -(m_terrain.n*1.5f),0.f,-(m_terrain.m*1.5f) }) * glm::mat4(1.f);
+	m_waterProgram.Use();
+	m_waterProgram.SetUniform("MVP", viewProj * waterWorld);
+	m_waterProgram.SetUniform("world", waterWorld);
+	m_waterProgram.SetUniform("worldIT", glm::inverse(glm::transpose(waterWorld)));
+	m_waterProgram.SetUniform("n", (float)m_terrain.n);
+	m_waterProgram.SetUniform("m", (float)m_terrain.m);
+	m_waterProgram.SetUniform("waterHeight", m_waterHeight);
+	m_waterProgram.SetUniform("elapsed_time", SDL_GetTicks() / 1000.f);
+	m_waterProgram.SetUniform("camera_pos", m_camera.GetEye());
+	m_waterProgram.SetUniform("light_dir", GetLightDirection());
+	m_waterProgram.SetUniform("Ld", GetLightColor());
+	m_waterProgram.SetTexture("water", 0, m_waterTexture);
+	m_terrain.Draw();
+	m_waterProgram.Unuse();
+
 	//Skybox
 	GLint prevDepthFnc;
 	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);
@@ -236,6 +265,7 @@ void CMyApp::Render()
 			ImGui::SliderFloat("Max height", &(m_terrain.maxHeight), 0.f, 100.f);
 			ImGui::SliderFloat("Sand height", &(m_terrain.sandHeight), 0.f, 10.f);
 			ImGui::SliderFloat("Snow height", &(m_terrain.snowHeight), 0.f, 100.f);
+			ImGui::SliderFloat("Water height", &(m_waterHeight), -10.f, 10.f);
 		}
 		{
 			ImGui::SliderFloat("Height Offset X", &m_offsetX_h, 0.f, 100.f);
