@@ -158,6 +158,7 @@ void CMyApp::Render()
 	m_terrain.program.SetUniform("MVP", viewProj * terrainWorld);
 	m_terrain.program.SetUniform("world", terrainWorld);
 	m_terrain.program.SetUniform("worldIT", glm::inverse(glm::transpose(terrainWorld)));
+	m_terrain.program.SetUniform("camera_pos", m_camera.GetEye());
 	m_terrain.program.SetUniform("light_dir", GetLightDirection());
 	m_terrain.program.SetUniform("Ld", GetLightColor());
 	m_terrain.SetUniforms();
@@ -172,6 +173,7 @@ void CMyApp::Render()
 		m_buildings.program.SetUniform("minHeight", m_terrain.minHeight);
 		m_buildings.program.SetUniform("maxHeight", m_terrain.maxHeight);
 		m_buildings.program.SetTexture("heightMap", 0, m_terrain.GetHeightTexture());
+		m_buildings.program.SetUniform("camera_pos", m_camera.GetEye());
 		m_buildings.program.SetUniform("light_dir", GetLightDirection());
 		m_buildings.program.SetUniform("Ld", GetLightColor());
 		m_buildings.Draw(viewProj);

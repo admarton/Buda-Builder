@@ -52,6 +52,5 @@ protected:
 	std::vector<std::pair<Rect, float>> foundations;
 	float ApplyFoundationOnHeightMap(const Rect& found);
 	void ApplyFoundationOnPatchMap(const Rect& found);
-	
 };
 
