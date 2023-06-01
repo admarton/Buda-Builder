@@ -205,7 +205,8 @@ void CMyApp::Render()
 	m_SkyboxVao.Bind();
 	m_programSkybox.Use();
 	m_programSkybox.SetUniform("MVP", viewProj * glm::translate( m_camera.GetEye()) );
-	m_programSkybox.SetUniform("color", glm::vec4(GetLightColor(), 1.f) );
+	m_programSkybox.SetUniform("sky_color", glm::vec4(GetSkyColor(), 1.f) );
+	m_programSkybox.SetUniform("light_dir", GetLightPos() );
 
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 	m_programSkybox.Unuse();
@@ -349,7 +350,16 @@ void CMyApp::PlaceBuilding(int x, int y)
 glm::vec3 CMyApp::GetLightDirection() const
 {
 	float theta = std::fmod((m_time+6.f) / 12.f, 1.f) * M_PI;
-	return glm::vec3(std::cos(theta), -std::sin(theta), 0);
+	return glm::vec3(-std::cos(theta), -std::sin(theta), 0);
+}
+
+glm::vec3 CMyApp::GetLightPos() const
+{
+	float theta = std::fmod((m_time+6.f) / 12.f, 1.f) * M_PI;
+	return glm::vec3(
+		std::max(std::min(std::cos(theta)/std::sin(theta), 1.f), -1.f), 
+		std::min(std::abs(std::tan(theta)), 1.f), 
+		0);
 }
 
 glm::vec3 CMyApp::GetLightColor() const
@@ -362,6 +372,46 @@ glm::vec3 CMyApp::GetLightColor() const
 	static const glm::vec3 yellow{ 0.8f, 0.8f, 0.2f };
 	static const glm::vec3 orange{ 0.8f, 0.5f, 0.2f };
 	static const glm::vec3 white{ 1.0f, 1.0f, 1.0f };
+
+	if(0.f < m_time && 6.f >= m_time) {
+		colorA = pale_white;
+		colorB = deep_blue;
+		factor = m_time / 6.f;
+	} else if (6.f < m_time && 9.f >= m_time) {
+		colorA = deep_blue;
+		colorB = yellow;
+		factor = (m_time - 6.f) / 3.f;
+	} else if (9.f < m_time && 12.f >= m_time) {
+		colorA = yellow;
+		colorB = white;
+		factor = (m_time - 9.f) / 3.f;
+	} else if (12.f < m_time && 16.f >= m_time) {
+		colorA = white;
+		colorB = orange;
+		factor = (m_time - 12.f) / 4.f;
+	} else if (16.f < m_time && 19.f >= m_time) {
+		colorA = orange;
+		colorB = deep_blue;
+		factor = (m_time - 16.f) / 3.f;
+	} else {
+		colorA = deep_blue;
+		colorB = pale_white;
+		factor = (m_time - 19.f) / 5.f;
+	}
+
+	return (1 - factor) * colorA + factor * (colorB);
+}
+
+glm::vec3 CMyApp::GetSkyColor() const
+{
+	glm::vec3 colorA, colorB;
+	float factor;
+
+	static const glm::vec3 pale_white{ 0.05f, 0.05f, 0.05f };
+	static const glm::vec3 deep_blue{ 0.1f, 0.1f, 0.3f };
+	static const glm::vec3 yellow{ 0.8f, 0.8f, 0.2f };
+	static const glm::vec3 orange{ 0.8f, 0.5f, 0.2f };
+	static const glm::vec3 white{ 0.9f, 0.9f, 1.0f };
 
 	if(0.f < m_time && 6.f >= m_time) {
 		colorA = pale_white;

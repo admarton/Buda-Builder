@@ -189,7 +189,7 @@ void Terrain::InitShaders()
 
 void Terrain::InitTextures()
 {
-	std::srand((unsigned)std::time(nullptr));
+	std::srand((unsigned)(time(nullptr)));
 	float offsetX = (float)std::rand() / (float)std::rand();
 	float offsetY = (float)std::rand() / (float)std::rand();
 	float increment = (float)(std::rand()%1000)/10000.f;

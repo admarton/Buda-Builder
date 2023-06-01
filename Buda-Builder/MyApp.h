@@ -105,7 +105,9 @@ protected:
 	enum TimeSpeed { Slow = 1, Medium = 24, Fast = 48 };
 	TimeSpeed m_timeSpeed = Slow;
 	glm::vec3 GetLightDirection() const;
+	glm::vec3 GetLightPos() const;
 	glm::vec3 GetLightColor() const;
+	glm::vec3 GetSkyColor() const;
 
 };
 
