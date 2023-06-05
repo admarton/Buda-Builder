@@ -46,3 +46,6 @@ imgui.ini
 
 # Exceptions
 !**/assets/*.obj
+
+# CMake build files
+build

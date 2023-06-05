@@ -11,7 +11,7 @@
 
 CMyApp::CMyApp(void)
 {
-	m_camera.SetView(glm::vec3(130, 20, 130), glm::vec3(125, 0, 125), glm::vec3(0, 1, 0));
+	m_camera.SetView(glm::vec3(130, 50, 130), glm::vec3(125, 0, 125), glm::vec3(0, 1, 0));
 }
 
 CMyApp::~CMyApp(void)
@@ -146,7 +146,7 @@ void CMyApp::Render()
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo.GetFrameBuffer());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.f,0.f,0.f,0.f);
-
+	
 	//Terrain
 	glm::mat4 terrainWorld = glm::mat4(1.f);
 	m_fbo.m_terrainProgram.Use();

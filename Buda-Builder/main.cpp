@@ -17,7 +17,7 @@
 
 #include "MyApp.h"
 
-int main( int argc, char* args[] )
+int main( [[maybe_unused]] int argc, [[maybe_unused]] char* args[] )
 {
 	atexit([]() {
 		SDL_Quit();

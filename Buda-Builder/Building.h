@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include "includes/ProgramObject.h"
